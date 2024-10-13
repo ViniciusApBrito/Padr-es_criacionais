@@ -1,45 +1,101 @@
-# Prática Padrões Criacionais (Atividade em aula e reposição de aula)
+# Estudo de Padrões Criacionais
 
-1. Qual o macete para se lembrar os padrões criacionais (Faça a devida associações).
+## Introdução
 
-2. Qual é o principal objetivo do padrão singleton?
+Este documento é uma compilação de estudos sobre os principais padrões criacionais de design, suas implementações e como eles podem ser aplicados em projetos de software.
 
-3. Qual o objetivo do primeiro exemplo do padrão singleton?
+## Macete para Lembrar os Padrões Criacionais
 
-4. Qual o problema do exemplo implementado e como solucionar?
+"Uma fábrica abstrata (Abstract Factory) constrói (Builder) protótipos (Prototype) utilizando de métodos de fabricação (Factory Method) únicos (Singleton)."
 
-5. Qual é a forma ideal para utilização do singleton?
+## Padrão Singleton
 
-6. Elabore um exemplo, diferente do apresentado, para uso do singleton e explique seu uso.
+### Objetivo
+Garantir que uma classe tenha apenas uma única instância durante toda a execução de um programa e fornecer um ponto de acesso global a essa instância.
 
-7. Qual é o principal objetivo do padrão Abstract Factory?
+### Exemplo
+```java
+public class CriaPoolDeRecursos {
+    private static CriaPoolDeRecursos _pool;
 
-8. Qual a implementação utilizada para implementação desse padrão?
+    private CriaPoolDeRecursos() { }
 
-9. Você considera essa implementação útil? Justifique. (Inclua os prints com os testes realizados por você)
+    public static synchronized CriaPoolDeRecursos getPoolDeRecursos() {
+        if (_pool == null) {
+            _pool = new CriaPoolDeRecursos();
+            System.out.println("Criado um pool de recursos para a aplicação.");
+        } else {
+            System.out.print("Um pool de recursos já foi criado para a aplicação.");
+        }
+        return _pool;
+    }
+}
+```
+Problema e Solução
+O padrão Singleton não é seguro em ambientes multithread. Para resolver isso, usamos o modificador synchronized no método getPoolDeRecursos() para garantir que apenas uma thread possa acessar o método por vez.
 
-10. Elabore um exemplo, diferente do apresentado, para uso do Abstract Factory e explique seu uso.
+Padrão Abstract Factory
+Objetivo
+Fornecer uma interface para criar famílias de objetos relacionados ou dependentes, sem especificar suas classes concretas.
 
-11. Qual é o principal objetivo do padrão Prototype?
+### Exemplo
+```java
+interface MobiliarioFactory {
+    Cadeira criarCadeira();
+    Mesa criarMesa();
+}
+```
+As classes concretas implementam essa interface para criar famílias específicas de produtos.
 
-12. Qual a implementação utilizada para implementação desse padrão?
+## Padrão Prototype
+### Objetivo
+Permite a criação de novos objetos através da clonagem de objetos existentes, em vez de instanciá-los diretamente.
 
-13. Você considera essa implementação útil? Justifique. (Inclua os prints com os testes realizados por você)
+### Exemplo
+```java
+public class ConcretePrototype implements Prototype {
+    private String name;
+    private int value;
 
-14. Elabore um exemplo, diferente do apresentado, para uso do Prototype e explique seu uso.
+    public ConcretePrototype(String name, int value) {
+        this.name = name;
+        this.value = value;
+    }
 
-15. Qual é o principal objetivo do padrão Factory Method?
+    @Override
+    public Prototype clone() {
+        return new ConcretePrototype(this.name, this.value);
+    }
+}
 
-16. Qual exemplo de utilização é apresentado e como isso interfere na implementação realizada?
+```
+## Padrão Factory Method
+### Objetivo
+Fornecer uma interface para criar objetos em uma classe, permitindo que as subclasses decidam quais objetos instanciar.
 
-17. Você considera essa implementação útil? Justifique. (Inclua os prints com os testes realizados por você)
+### Exemplo
+```java
+public class VeiculoFactory {
+    public IVeiculo getVeiculo(String tipo) throws Exception {
+        switch (tipo) {
+            case "Carro":
+                return new Carro();
+            case "Bicicleta":
+                return new Bicicleta();
+            default:
+                throw new Exception("Tipo de veículo não reconhecido!");
+        }
+    }
+}
 
-18. Elabore um exemplo, diferente do apresentado, para uso do Prototype e explique seu uso.
+```
 
-19. Qual é o principal objetivo do padrão Builder?
+## Padrão Builder
+### Objetivo
+Separar a construção de um objeto complexo da sua representação, permitindo que o mesmo processo de construção crie diferentes representações.
 
-20. Qual a implementação utilizada para implementação desse padrão?
+## Implementação
+Usa uma classe chamada "Builder", que contém métodos específicos para configurar partes do objeto complexo. O objeto final é criado por meio de um processo passo a passo.
 
-21. Você considera essa implementação útil? Justifique. (Inclua os prints com os testes realizados por você)
-
-22. Elabore um exemplo, diferente do apresentado, para uso do Prototype e explique seu uso.
+## Considerações Finais
+A compreensão e aplicação desses padrões de design são cruciais para a criação de software bem estruturado e de fácil manutenção. Estudar esses padrões ajuda a desenvolver habilidades de programação mais avançadas e a escrever código mais limpo e eficiente.
